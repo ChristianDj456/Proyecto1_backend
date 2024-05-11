@@ -5,7 +5,7 @@ const {
   updateProductoMongo,
   getProductoId,
   sfDeletePedido,
-} = require("./producto.actions");
+} = require("./libros.actions");
 
 async function createProducto(datos) {
   const { estado } = datos;

@@ -11,8 +11,8 @@ app.get("/", (req,res) => {
     res.status(200).json({});
 })
 
-const rutasProducto = require("./producto/producto.route")
-app.use('/producto', rutasProducto);
+const rutasLibros = require("./Libros/libros.route")
+app.use('/libros', rutasLibros);
 
 const rutasUsuario = require("./Auth/auth.route")
 app.use('/Usuarios', rutasUsuario);

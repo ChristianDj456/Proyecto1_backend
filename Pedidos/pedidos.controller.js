@@ -1,6 +1,6 @@
 const orderActions = require("./pedidos.actions");
-const { getProductoById } = require("../producto/producto.controller");
-const { getOnlyPropietario, getTotal } = require("./pedidos.actions");
+const { getProductoById } = require("../Libros/libros.actions");
+const { getOnlyPropietario, getTotal, getOrders } = require("./pedidos.actions");
 
 async function createOrder(req, res) {
   const productos = req.productos; // productos debería ser una lista de objetos con productoId y cantidad
@@ -30,20 +30,29 @@ async function createOrder(req, res) {
   }
 }
 
-async function getOrderById(req, res) {
+// async function getOrderById(req, res) {
+//   try {
+//     const orderId = req.params.id;
+//     const order = await orderActions.getOrderById(orderId);
+//     res.status(200).json(order);
+//   } catch (error) {
+//     res.status(404).json({ error: error.message });
+//   }
+// }
+
+async function getOrder(req, res) {
   try {
-    const orderId = req.params.id;
-    const order = await orderActions.getOrderById(orderId);
-    res.status(200).json(order);
+    const orders = await getOrders(req.query);
+    res.status(200).json(orders);
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
 }
-
 // Agrega más funciones de controladores según tus necesidades
 
 module.exports = {
   createOrder,
-  getOrderById,
+  //getOrderById,
+  getOrder,
   // Agrega más funciones de controladores aquí
 };

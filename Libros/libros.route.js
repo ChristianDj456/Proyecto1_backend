@@ -1,12 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {
-  readProductoConFiltros,
-  getProductoById,
-  createProducto,
-  updateProducto,
-  sfdeleteProducto
-} = require("./producto.controller");
+const { readProductoConFiltros, getProductoById, createProducto, updateProducto, sfdeleteProducto } = require("./libros.controller");
 const { respondWithError, throwCustomError } = require("../utils/functions");
 const { authenticate } = require("../Auth/auth.middleware");
 
@@ -57,21 +51,31 @@ async function PatchProductos(req, res) {
     const buscarLibros = await getProductoById(req.body._id);
     const ownerId = buscarLibros.propietario;
     const userActive = req.user;
-    if (ownerId !== userActive) {
-      throwCustomError(401, "No tienes permisos para modificar este libro");
-    }
-    updateProducto(req.body);
+    //console.log("Propietario -> ",ownerId," Usuario Activo -> ",userActive);
+    if (ownerId.equals(userActive)) {
+      updateProducto(req.body);
     res.status(200).json({
       mensaje: "Exito. 👍",
     });
+    }else{
+      throwCustomError(401, "No tienes permisos para modificar este libro");
+    }
   } catch (e) {
     respondWithError(res, e);
   }
 }
 
 async function SoftDeleteProducto(req, res) {
+  UserActive = req.user;
+  buscarLibros = await getProductoById(req.params.id);
   try {
-    await sfdeleteProducto(req.params.id, { habilitado: false });
+    // llamada a controlador con los datos
+    if (buscarLibros.propietario.equals(UserActive)) {
+      await sfdeleteProducto(req.params.id, { habilitado: false });
+    } else {
+      throwCustomError(401, "No tienes permisos para eliminar este libro");
+    }
+    //await sfdeleteProducto(req.params.id, { habilitado: false });
     res.status(200).json({
       mensaje: "Exito. 👍, Libro eliminado correctamente",
     });
@@ -82,7 +86,7 @@ async function SoftDeleteProducto(req, res) {
 
 router.get("/Ver", GetProductos);
 router.get("/VerUser", authenticate, GetProductos);
-router.post("/CreateProducto", authenticate, PostProducto);
+router.post("/CreateLibro", authenticate, PostProducto);
 router.patch("/Actualizar", authenticate, PatchProductos);
 router.patch("/softeliminar/:id", authenticate, SoftDeleteProducto);
 

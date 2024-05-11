@@ -1,4 +1,4 @@
-const Producto = require("./producto.model");
+const Producto = require("./libros.model");
 
 async function getProductoMongo(filtros) {
   filtros = { ...filtros, habilitado: true };

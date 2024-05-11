@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router();
 const { readUsuarioConFiltros, createUsuario, updateUsuario, deleteUsuario } = require("./auth.controller");
 const { respondWithError } = require('../utils/functions');
+const { authenticate } = require('../Auth/auth.middleware');
 
 async function GetUsuarios(req, res) {
     try {
@@ -43,8 +44,8 @@ async function DeleteUsuarios(req, res) {
     }
 }
 
-router.get("/", GetUsuarios);
-router.patch("/", PatchUsuarios);
-router.delete("/:id", DeleteUsuarios);
+router.get("/", authenticate, GetUsuarios);
+router.patch("/", authenticate, PatchUsuarios);
+router.delete("/:id", authenticate, DeleteUsuarios);
 
 module.exports = router;

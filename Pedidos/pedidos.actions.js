@@ -1,5 +1,6 @@
 const Order = require("./pedidos.model");
-const Producto = require("../producto/producto.model");
+const Producto = require("../Libros/libros.model");
+const { get } = require("mongoose");
 
 async function createOrder(orderData) {
   try {
@@ -10,14 +11,23 @@ async function createOrder(orderData) {
   }
 }
 
-async function getOrderById(orderId) {
+async function getOrders() {
   try {
-    const order = await Order.findById(orderId).populate("customer products");
-    return order;
+    const orders = await Order.find().populate("customer products");
+    return orders;
   } catch (error) {
-    throw new Error("Pedido no encontrado");
+    throw new Error("Error al obtener los pedidos");
   }
 }
+
+// async function getOrderById(orderId) {
+//   try {
+//     const order = await Order.findById(orderId).populate("customer products");
+//     return order;
+//   } catch (error) {
+//     throw new Error("Pedido no encontrado");
+//   }
+// }
 
 async function getOnlyPropietario(productos_id) {
   const productos = await Producto.find({ _id: { $in: productos_id } });
@@ -41,8 +51,9 @@ async function getTotal(productos_id) {
 
 module.exports = {
   createOrder,
-  getOrderById,
+  //getOrderById,
   getTotal,
   getOnlyPropietario,
+  getOrders,
   // Agrega más funciones de acciones aquí
 };

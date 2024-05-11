@@ -21,7 +21,17 @@ async function createOrder(req, res) {
   }
 }
 
+async function getOrder(req, res) {
+  try {
+    const order = await pedidosController.getOrder(req.query);
+    res.status(200).json(order);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
 // Rutas
+router.get("/", getOrder);
 router.post("/CreateOrder", authenticate, createOrder);
 //router.get('/:id', orderController.getOrderById);
 
