@@ -1,6 +1,6 @@
 const orderActions = require("./pedidos.actions");
 const { getProductoById } = require("../Libros/libros.actions");
-const { getOnlyPropietario, getTotal, getOrders } = require("./pedidos.actions");
+const { getOnlyPropietario, getTotal, getOrders, cancelOrder } = require("./pedidos.actions");
 
 async function createOrder(req, res) {
   const productos = req.productos; // productos debería ser una lista de objetos con productoId y cantidad
@@ -14,7 +14,6 @@ async function createOrder(req, res) {
         "No se puede realizar el pedido los libros deben ser del mismo vendedor",
     };
   }
-
   precioTotal = await getTotal(productos);
   try {
     const request = {
@@ -30,6 +29,16 @@ async function createOrder(req, res) {
   }
 }
 
+
+async function cancelOrderController(req, res) {
+  try {
+    const orderId = req.params.orderId;
+    const order = await cancelOrder(orderId);
+    res.status(200).json({ message: "Pedido cancelado exitosamente", order });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
 // async function getOrderById(req, res) {
 //   try {
 //     const orderId = req.params.id;
@@ -54,5 +63,6 @@ module.exports = {
   createOrder,
   //getOrderById,
   getOrder,
+  cancelOrderController,
   // Agrega más funciones de controladores aquí
 };
