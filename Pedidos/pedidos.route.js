@@ -13,7 +13,6 @@ async function createOrder(req, res) {
       ...req.body,
       cliente: usuarioActual
     };
-    //console.log(pedidoDatos);
     const order = await pedidosController.createOrder(pedidoDatos, res);
 
     res.status(201).json(order);

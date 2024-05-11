@@ -16,25 +16,6 @@ async function createOrder(req, res) {
   }
 
   precioTotal = await getTotal(productos);
-  //   for (let i = 0; i < productos.length; i++) {
-  //     const producto = await getProductoById(productos[i]);
-  //     console.log(producto);
-  //     if (!producto || producto[i].propietario !== productos[i + 1].propietario) {
-  //       return res.status(404).send("Producto no encontrado");
-  //     }
-  //     precioTotal += producto.precio;
-  //console.log(precioTotal);
-  //   }
-  /*const nuevoPedido = {
-        usuarioId: req.user,
-        productos: productos.map(item => ({
-            productoId: productos,
-            //precio: producto.precio // opcional, si quieres almacenar el precio en el pedido
-        })),
-        estado: 'Pendiente',
-        precioTotal: precioTotal
-    };
-    console.log(nuevoPedido);*/
   try {
     const request = {
       ...req.productos,

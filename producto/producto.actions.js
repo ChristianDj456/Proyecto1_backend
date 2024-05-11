@@ -2,14 +2,13 @@ const Producto = require("./producto.model");
 
 async function getProductoMongo(filtros) {
   filtros = { ...filtros, habilitado: true };
-  //const cantidadProductos = await Producto.countDocuments(filtros);
+  const cantidadProductos = await Producto.countDocuments(filtros);
   const productosFiltrados = await Producto.find(filtros);
-
   return {
     resultados: productosFiltrados, //,
     // paginaMax: cantidadProductos / 20,
     // paginaActual: 1,
-    //cantidadProductos: cantidadProductos
+    cantidadProductos: cantidadProductos,
   };
 }
 
