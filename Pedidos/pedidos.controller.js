@@ -1,6 +1,14 @@
 const orderActions = require("./pedidos.actions");
-const { getProductoById } = require("../Libros/libros.actions");
-const { getOnlyPropietario, getTotal, getOrders, cancelOrder } = require("./pedidos.actions");
+// const { getProductoById } = require("../Libros/libros.actions");
+const {
+  getOnlyPropietario,
+  getTotal,
+  getOrders,
+  cancelOrder,
+  getPropietario,
+  getOrderByID,
+  completeOrder,
+} = require("./pedidos.actions");
 
 async function createOrder(req, res) {
   const productos = req.productos; // productos debería ser una lista de objetos con productoId y cantidad
@@ -14,12 +22,14 @@ async function createOrder(req, res) {
         "No se puede realizar el pedido los libros deben ser del mismo vendedor",
     };
   }
+  const propietario = await getPropietario(productos);
   precioTotal = await getTotal(productos);
   try {
     const request = {
-      ...req.productos,
+      ...req,
       precioTotal: precioTotal,
       productos: productos,
+      vendedor: propietario,
     };
     const order = await orderActions.createOrder(request);
     //console.log(order);
@@ -29,25 +39,37 @@ async function createOrder(req, res) {
   }
 }
 
-
-async function cancelOrderController(req, res) {
+async function cancelOrderController(datos) {
   try {
-    const orderId = req.params.orderId;
+    const orderId = datos;
+    // console.log("ID del pedido ", orderId);
     const order = await cancelOrder(orderId);
-    res.status(200).json({ message: "Pedido cancelado exitosamente", order });
+    return order;
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    throw new Error("Error al cancelar el pedido");
   }
 }
-// async function getOrderById(req, res) {
-//   try {
-//     const orderId = req.params.id;
-//     const order = await orderActions.getOrderById(orderId);
-//     res.status(200).json(order);
-//   } catch (error) {
-//     res.status(404).json({ error: error.message });
-//   }
-// }
+
+async function completeOrderController(datos) {
+  try {
+    const orderId = datos;
+    // console.log("ID del pedido ", orderId);
+    const order = await completeOrder(orderId);
+    return order;
+  } catch (error) {
+    throw new Error("Error al completar el pedido");
+  }
+}
+
+async function getOrderById(orden) {
+  try {
+    const orderId = orden;
+    const order = await getOrderByID(orderId);
+    return order;
+  } catch (error) {
+    throw new Error(" Error al obtener el pedido por id");
+  }
+}
 
 async function getOrder(req, res) {
   try {
@@ -61,8 +83,9 @@ async function getOrder(req, res) {
 
 module.exports = {
   createOrder,
-  //getOrderById,
+  getOrderById,
   getOrder,
   cancelOrderController,
+  completeOrderController,
   // Agrega más funciones de controladores aquí
 };

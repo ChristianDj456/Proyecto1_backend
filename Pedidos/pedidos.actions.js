@@ -13,9 +13,8 @@ const { get } = require("mongoose");
 
 async function createOrder(orderData) {
   try {
-    
     // Cambiar el estado de los libros a no disponible
-    const librosIds = orderData.productos  // Asume que orderData tiene un array de productos con sus ids
+    const librosIds = orderData.productos; // Asume que orderData tiene un array de productos con sus ids
     await Producto.updateMany(
       { _id: { $in: librosIds } },
       { $set: { habilitado: false } }
@@ -37,14 +36,14 @@ async function getOrders() {
   }
 }
 
-// async function getOrderById(orderId) {
-//   try {
-//     const order = await Order.findById(orderId).populate("customer products");
-//     return order;
-//   } catch (error) {
-//     throw new Error("Pedido no encontrado");
-//   }
-// }
+async function getOrderByID(orderId) {
+  try {
+    const order = await Order.findById(orderId);
+    return order;
+  } catch (error) {
+    throw new Error("Pedido no encontrado");
+  }
+}
 
 async function getOnlyPropietario(productos_id) {
   const productos = await Producto.find({ _id: { $in: productos_id } });
@@ -59,6 +58,11 @@ async function getOnlyPropietario(productos_id) {
   return true;
 }
 
+async function getPropietario(productos_id) {
+  const productos = await Producto.find({ _id: { $in: productos_id } });
+  return productos[0].propietario;
+}
+
 async function getTotal(productos_id) {
   const productos = await Producto.find({ _id: { $in: productos_id } });
   return productos.reduce((acc, producto) => acc + producto.precio, 0);
@@ -71,13 +75,7 @@ async function cancelOrder(orderId) {
       throw new Error("Pedido no encontrado");
     }
 
-    const librosIds = order.productos;
-    await Producto.updateMany(
-      { _id: { $in: librosIds } },
-      { $set: { habilitado: true } }
-    );
-
-    order.estado = "Cancelado";  // Asume que hay un campo 'estado'
+    order.estado = "cancelado"; // Asume que hay un campo 'estado'
     await order.save();
 
     return order;
@@ -85,14 +83,32 @@ async function cancelOrder(orderId) {
     throw new Error("Error al cancelar el pedido");
   }
 }
+
+async function completeOrder(orderId) {
+  try {
+    const order = await Order.findById(orderId);
+    if (!order) {
+      throw new Error("Pedido no encontrado");
+    }
+
+    order.estado = "completado"; // Asume que hay un campo 'estado'
+    await order.save();
+
+    return order;
+  } catch (error) {
+    throw new Error("Error al completar el pedido");
+  }
+}
 // Agrega más funciones de acciones según tus necesidades
 
 module.exports = {
   createOrder,
-  //getOrderById,
+  getOrderByID,
   getTotal,
   getOnlyPropietario,
   getOrders,
   cancelOrder,
+  getPropietario,
+  completeOrder,
   // Agrega más funciones de acciones aquí
 };
