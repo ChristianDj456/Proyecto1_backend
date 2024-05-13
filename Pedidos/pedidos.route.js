@@ -20,14 +20,25 @@ async function createOrder(req, res) {
   }
 }
 
+// async function getOrder(req, res) {
+//   try {
+//     const order = await pedidosController.getOrder(req.query);
+//     res.status(200).json(order);
+//   } catch (error) {
+//     res.status(400).json({ error: error.message });
+//   }
+// }
+
 async function getOrder(req, res) {
   try {
-    const order = await pedidosController.getOrder(req.query);
+    const { fechaInicio, fechaFin, estado } = req.query;
+    const order = await pedidosController.getOrder({ fechaInicio, fechaFin, estado });
     res.status(200).json(order);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 }
+
 
 // async function getOrderByIds(req, res) {
 //   try {

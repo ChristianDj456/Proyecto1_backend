@@ -71,14 +71,23 @@ async function getOrderById(orden) {
   }
 }
 
-async function getOrder(req) {
+// async function getOrder(req) {
+//   try {
+//     const orders = await getOrders(req);
+//     return orders;
+//   } catch (error) {
+//     throw new Error(" Error al obtener el pedido");
+//   }
+// }
+async function getOrder({ fechaInicio, fechaFin, estado }) {
   try {
-    const orders = await getOrders(req);
+    const orders = await getOrders({ fechaInicio, fechaFin, estado });
     return orders;
   } catch (error) {
-    throw new Error(" Error al obtener el pedido");
+    throw new Error("Error al obtener el pedido");
   }
 }
+
 // Agrega más funciones de controladores según tus necesidades
 
 module.exports = {

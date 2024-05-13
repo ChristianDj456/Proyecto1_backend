@@ -27,14 +27,62 @@ async function createOrder(orderData) {
   }
 }
 
-async function getOrders(datos) {
+// async function getOrders(datos) {
+//   try {
+//     const orders = await Order.find(datos);
+//     return orders;
+//   } catch (error) {
+//     throw new Error("Error al obtener los pedidos");
+//   }
+// }
+
+// async function getOrders({ fechaInicio, fechaFin, estado }) {
+//   try {
+//     let query = {};
+//     if (fechaInicio && fechaFin) {
+//       // Convertir las fechas de inicio y fin en objetos Date
+//       const startDate = new Date(fechaInicio);
+//       const endDate = new Date(fechaFin);
+
+//       // Construir la consulta para filtrar por fecha de creación
+//       query.fecha_creacion = { $gte: startDate, $lte: endDate };
+//     }
+//     console.log(query);
+
+//     const orders = await Order.find(query);
+//     return orders;
+//   } catch (error) {
+//     throw new Error("Error al obtener los pedidos");
+//   }
+// }
+
+async function getOrders({ fechaInicio, fechaFin, estado }) {
   try {
-    const orders = await Order.find(datos);
+    let query = {};
+
+    // Agregar filtro por fecha de creación si se proporcionan fechas
+    if (fechaInicio && fechaFin) {
+      const startDate = new Date(fechaInicio);
+      startDate.setHours(0, 0, 0); // Establecer hora a las 00:00:00
+      const endDate = new Date(fechaFin);
+      endDate.setHours(23, 59, 59); // Establecer hora a las 23:59:59
+      query.fecha_creacion = { $gte: startDate, $lte: endDate };
+    }
+
+    // Agregar filtro por estado del pedido si se proporciona
+    if (estado) {
+      query.estado = estado;
+    }
+
+    const orders = await Order.find(query);
     return orders;
   } catch (error) {
     throw new Error("Error al obtener los pedidos");
   }
 }
+
+
+
 
 async function getOrderByID(orderId) {
   try {
