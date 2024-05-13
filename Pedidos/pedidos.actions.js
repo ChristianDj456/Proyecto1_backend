@@ -27,9 +27,9 @@ async function createOrder(orderData) {
   }
 }
 
-async function getOrders() {
+async function getOrders(datos) {
   try {
-    const orders = await Order.find().populate("customer products");
+    const orders = await Order.find(datos);
     return orders;
   } catch (error) {
     throw new Error("Error al obtener los pedidos");

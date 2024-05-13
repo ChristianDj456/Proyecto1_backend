@@ -71,12 +71,12 @@ async function getOrderById(orden) {
   }
 }
 
-async function getOrder(req, res) {
+async function getOrder(req) {
   try {
-    const orders = await getOrders(req.query);
-    res.status(200).json(orders);
+    const orders = await getOrders(req);
+    return orders;
   } catch (error) {
-    res.status(404).json({ error: error.message });
+    throw new Error(" Error al obtener el pedido");
   }
 }
 // Agrega más funciones de controladores según tus necesidades

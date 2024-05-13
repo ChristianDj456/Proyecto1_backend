@@ -78,7 +78,7 @@ async function completeOrders(req, res) {
 }
 
 // Rutas
-router.get("/", getOrder);
+router.get("/Ver", getOrder);
 router.post("/CreateOrder", authenticate, createOrder);
 router.patch("/CancelarPedido/:id", authenticate, cancelOrders);
 router.patch("/CompletarPedido/:id", authenticate, completeOrders);
