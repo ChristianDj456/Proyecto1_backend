@@ -1,27 +1,32 @@
 const express = require("express");
 const router = express.Router();
-const { readProductoConFiltros, getProductoById, createProducto, updateProducto, sfdeleteProducto } = require("./libros.controller");
+const {
+  readProductoConFiltros,
+  getProductoById,
+  createProducto,
+  updateProducto,
+  sfdeleteProducto,
+} = require("./libros.controller");
 const { respondWithError, throwCustomError } = require("../utils/functions");
 const { authenticate } = require("../Auth/auth.middleware");
 
 async function GetProductos(req, res) {
   try {
     // llamada a controlador con los filtros
-    if(req.user !== req.query.propietario){
-      newQuery = { ...req.query, propietario: req.user};
+    if (req.user !== req.query.propietario) {
+      const resultadosBusqueda = await readProductoConFiltros(req.query);
+      res.status(200).json({
+        ...resultadosBusqueda,
+        msg: "Exito. 👍",
+      });
+    } else {
+      newQuery = { ...req.query, propietario: req.user };
       const resultadosBusqueda = await readProductoConFiltros(newQuery);
       res.status(200).json({
         ...resultadosBusqueda,
         msg: "Exito. 👍",
       });
-    }else{
-    const resultadosBusqueda = await readProductoConFiltros(req.query);
-    res.status(200).json({
-      ...resultadosBusqueda,
-      msg: "Exito. 👍",
-    });
     }
-   
   } catch (e) {
     res.status(500).json({ msg: "" });
   }
@@ -54,10 +59,10 @@ async function PatchProductos(req, res) {
     //console.log("Propietario -> ",ownerId," Usuario Activo -> ",userActive);
     if (ownerId.equals(userActive)) {
       updateProducto(req.body);
-    res.status(200).json({
-      mensaje: "Exito. 👍",
-    });
-    }else{
+      res.status(200).json({
+        mensaje: "Exito. 👍",
+      });
+    } else {
       throwCustomError(401, "No tienes permisos para modificar este libro");
     }
   } catch (e) {
@@ -89,6 +94,5 @@ router.get("/VerUser", authenticate, GetProductos);
 router.post("/CreateLibro", authenticate, PostProducto);
 router.patch("/Actualizar", authenticate, PatchProductos);
 router.patch("/softeliminar/:id", authenticate, SoftDeleteProducto);
-
 
 module.exports = router;

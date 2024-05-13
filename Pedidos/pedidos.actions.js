@@ -74,6 +74,11 @@ async function cancelOrder(orderId) {
     if (!order) {
       throw new Error("Pedido no encontrado");
     }
+    const product = order.productos;
+    await Producto.updateMany(
+      { _id: { $in: product } },
+      { $set: { habilitado: true } }
+    );
 
     order.estado = "cancelado"; // Asume que hay un campo 'estado'
     await order.save();
@@ -90,6 +95,12 @@ async function completeOrder(orderId) {
     if (!order) {
       throw new Error("Pedido no encontrado");
     }
+
+    const product = order.productos;
+    await Producto.updateMany(
+      { _id: { $in: product } },
+      { $set: { habilitado: false } }
+    );
 
     order.estado = "completado"; // Asume que hay un campo 'estado'
     await order.save();
