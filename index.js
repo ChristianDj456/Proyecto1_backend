@@ -17,6 +17,9 @@ app.use('/libros', rutasLibros);
 const rutasUsuario = require("./Auth/auth.route")
 app.use('/Usuarios', rutasUsuario);
 
+const rutasUsers = require("./Usuarios/usuario.route")
+app.use('/Users', rutasUsers);
+
 const rutasPedidos = require("./Pedidos/pedidos.route")
 app.use('/Pedidos', rutasPedidos);
 

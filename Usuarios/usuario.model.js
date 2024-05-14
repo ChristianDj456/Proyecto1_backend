@@ -44,6 +44,10 @@ const schemaUsuario = new mongoose.Schema({
       }
     }
   ],*/
+  habilitado: {
+    type: Boolean,
+    default: true
+  },
   fecha_creacion: {
     type: Date,
     default: Date.now

@@ -42,19 +42,6 @@ function updateProducto(datos) {
   return productoCreado;
 }
 
-async function deleteProducto(id) {
-  const producto = await getProductoId(id);
-
-  try {
-    //const productoCreado = deleteProductoMongo(id);
-    // return productoCreado;
-  } catch (error) {
-    throwCustomError(500, "Error al eliminar producto");
-  }
-  //const productoCreado = deleteProductoMongo(id);
-
-  //return productoCreado;
-}
 
 async function sfdeleteProducto(id, cambios) {
   const producto = await getProductoId(id);
@@ -74,7 +61,6 @@ module.exports = {
   readProductoConFiltros,
   createProducto,
   updateProducto,
-  deleteProducto,
   getProductoById,
   sfdeleteProducto,
 };

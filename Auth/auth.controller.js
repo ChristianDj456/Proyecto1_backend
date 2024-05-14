@@ -10,8 +10,7 @@ const {
 const argon2 = require("argon2");
 
 async function readUsuarioConFiltros(query) {
-  const { nombre, apellido, correo, direccion_envio, historial_compras } =
-    query;
+  const { nombre, apellido, correo, direccion_envio, historial_compras } = query;
 
   // hacer llamado a base de datos con el filtro de tipo
   const resultadosBusqueda = await getUsuarioMongo(query);

@@ -12,23 +12,17 @@ const { authenticate } = require("../Auth/auth.middleware");
 
 async function GetProductos(req, res) {
   try {
-    // llamada a controlador con los filtros
-    if (req.user !== req.query.propietario) {
-      const resultadosBusqueda = await readProductoConFiltros(req.query);
-      res.status(200).json({
-        ...resultadosBusqueda,
-        msg: "Exito. 👍",
-      });
-    } else {
-      newQuery = { ...req.query, propietario: req.user };
-      const resultadosBusqueda = await readProductoConFiltros(newQuery);
-      res.status(200).json({
-        ...resultadosBusqueda,
-        msg: "Exito. 👍",
-      });
-    }
+    const userId = req.user; // Obtenemos el ID del usuario logueado
+    const query = { ...req.query, propietario: { $ne: userId } }; // Excluimos los libros del usuario
+
+    const resultadosBusqueda = await readProductoConFiltros(query);
+
+    res.status(200).json({
+      ...resultadosBusqueda,
+      msg: "Exito. 👍",
+    });
   } catch (e) {
-    res.status(500).json({ msg: "" });
+    res.status(500).json({ msg: "Error al obtener los productos" });
   }
 }
 
